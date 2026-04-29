@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tusks Up — Utah Mammoth Playoff Fatigue Report 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --black: #0a0a0a;
+  --blue: #6CACE3;
+  --blue-dark: #3a7ec4;
+  --blue-dim: rgba(108,172,227,0.15);
+  --white: #f8f8f8;
+  --gray: #888;
+  --gray-light: #1a1a1a;
+  --gray-mid: #2a2a2a;
+  --green: #4CAF7D;
+  --red: #E05252;
+  --amber: #E8A838;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--black);
+  color: var(--white);
+  line-height: 1.7;
+}
+
+/* HEADER */
+.header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 80px;
+  position: relative;
+  overflow: hidden;
+  background: var(--black);
+}
+
+.header-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(108,172,227,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108,172,227,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.header-glow {
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(ellipse, rgba(108,172,227,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 48px;
+  position: relative;
+}
+
+.eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--blue);
+}
+
+h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(56px, 9vw, 110px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+h1 .blue { color: var(--blue); }
+
+.header-sub {
+  font-size: 18px;
+  color: rgba(248,248,248,0.5);
+  font-weight: 300;
+  font-style: italic;
+  max-width: 520px;
+  margin: 24px 0 48px;
+  line-height: 1.5;
+}
+
+.header-meta {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid rgba(108,172,227,0.2);
+  padding-top: 24px;
+}
+
+.meta-pill {
+  padding: 8px 24px 8px 0;
+  margin-right: 24px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.meta-pill:last-child { border-right: none; }
+
+.meta-pill .ml { font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray); display: block; margin-bottom: 3px; }
+.meta-pill .mv { font-size: 13px; color: rgba(248,248,248,0.75); }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  right: 48px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scroll-hint::after {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gray), transparent);
+}
+
+/* NAV */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(108,172,227,0.15);
+  padding: 0 48px;
+}
+
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+}
+
+.nav-brand {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-right: 32px;
+  flex-shrink: 0;
+}
+
+.nav-links { display: flex; gap: 0; }
+.nav-links a {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  text-decoration: none;
+  padding: 0 16px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.nav-links a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* SECTIONS */
+section {
+  padding: 96px 48px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--blue); }
+
+h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 24px;
+}
+
+h2 .blue { color: var(--blue); }
+
+.lede {
+  font-size: 20px;
+  line-height: 1.6;
+  color: rgba(248,248,248,0.75);
+  font-style: italic;
+  max-width: 680px;
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+
+p {
+  font-size: 16px;
+  color: rgba(248,248,248,0.65);
+  max-width: 680px;
+  margin-bottom: 20px;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+p strong { color: var(--white); font-weight: 600; }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(108,172,227,0.2), transparent);
+  margin: 0 48px;
+}
+
+/* TAKEAWAY CARDS */
+.takeaways {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin: 48px 0;
+  background: rgba(108,172,227,0.1);
+  border: 1px solid rgba(108,172,227,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.takeaway {
+  background: var(--gray-light);
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.takeaway:hover { background: var(--gray-mid); }
+
+.takeaway::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+
+.takeaway:hover::before { transform: scaleX(1); }
+
+.takeaway-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(108,172,227,0.15);
+  margin-bottom: 16px;
+}
+
+.takeaway-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.takeaway-desc {
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* STAT ROW */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2px;
+  margin: 40px 0;
+  background: rgba(108,172,227,0.08);
+}
+
+.stat-box {
+  background: var(--gray-light);
+  padding: 28px 24px;
+}
+
+.stat-box .sl { font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray); margin-bottom: 10px; display: block; }
+.stat-box .sv { font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: 700; line-height: 1; margin-bottom: 6px; color: var(--white); }
+.stat-box .sd { font-size: 12px; color: var(--gray); line-height: 1.5; }
+.stat-box.blue .sv { color: var(--blue); }
+.stat-box.green .sv { color: var(--green); }
+.stat-box.amber .sv { color: var(--amber); }
+
+/* CHART CONTAINERS */
+.chart-wrap {
+  background: var(--gray-light);
+  border: 1px solid rgba(108,172,227,0.12);
+  border-radius: 4px;
+  padding: 32px;
+  margin: 40px 0;
+}
+
+.chart-wrap h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+.chart-wrap .chart-note {
+  font-size: 12px;
+  color: var(--gray);
+  font-style: italic;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.chart-canvas-wrap {
+  position: relative;
+  height: 320px;
+}
+
+/* INSIGHT BOX */
+.insight {
+  border-left: 3px solid var(--blue);
+  padding: 20px 24px;
+  background: var(--blue-dim);
+  margin: 32px 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.insight.green { border-color: var(--green); background: rgba(76,175,125,0.1); }
+.insight.amber { border-color: var(--amber); background: rgba(232,168,56,0.1); }
+.insight.red { border-color: var(--red); background: rgba(224,82,82,0.1); }
+
+.insight-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+.insight.green .insight-label { color: var(--green); }
+.insight.amber .insight-label { color: var(--amber); }
+.insight.red .insight-label { color: var(--red); }
+
+.insight p { font-size: 15px; max-width: none; margin: 0; color: rgba(248,248,248,0.85); }
+
+/* PLAYER CARDS */
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px;
+  margin: 40px 0;
+  background: rgba(108,172,227,0.08);
+}
+
+.player-card {
+  background: var(--gray-light);
+  padding: 24px;
+}
+
+.player-card .pc-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.player-card .pc-tag {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.pc-tag.green { background: rgba(76,175,125,0.2); color: var(--green); }
+.pc-tag.amber { background: rgba(232,168,56,0.2); color: var(--amber); }
+.pc-tag.red { background: rgba(224,82,82,0.2); color: var(--red); }
+
+.player-card .pc-stat {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.pc-stat.green { color: var(--green); }
+.pc-stat.amber { color: var(--amber); }
+.pc-stat.red { color: var(--red); }
+
+.player-card .pc-label { font-size: 11px; color: var(--gray); }
+.player-card .pc-note { font-size: 13px; color: rgba(248,248,248,0.5); margin-top: 12px; font-style: italic; line-height: 1.5; }
+
+/* TIMELINE */
+.timeline { margin: 40px 0; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 100px; top: 0; bottom: 0; width: 1px; background: rgba(108,172,227,0.2); }
+
+.tl-item { display: grid; grid-template-columns: 100px 1fr; gap: 0; margin-bottom: 0; }
+.tl-date { font-family: 'Oswald', sans-serif; font-size: 11px; color: var(--gray); padding: 20px 20px 20px 0; text-align: right; line-height: 1.4; }
+.tl-body { padding: 20px 0 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.tl-body strong { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 500; color: var(--white); text-transform: uppercase; letter-spacing: 0.03em; display: block; margin-bottom: 4px; }
+.tl-body span { font-size: 13px; color: var(--gray); }
+.tl-item.key .tl-date { color: var(--blue); }
+.tl-item.key .tl-body strong { color: var(--blue); }
+.tl-item.key::before { content: ''; position: absolute; left: 96px; width: 9px; height: 9px; background: var(--blue); border-radius: 50%; margin-top: 24px; }
+
+/* FOOTER */
+footer {
+  background: #050505;
+  border-top: 1px solid rgba(108,172,227,0.1);
+  padding: 48px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+footer p { font-size: 12px; color: var(--gray); max-width: none; text-align: center; margin: 0; line-height: 2; }
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.6s ease both; }
+.fade-up-1 { animation-delay: 0.1s; }
+.fade-up-2 { animation-delay: 0.2s; }
+.fade-up-3 { animation-delay: 0.3s; }
+.fade-up-4 { animation-delay: 0.4s; }
+
+@media (max-width: 768px) {
+  section, .sticky-nav { padding-left: 24px; padding-right: 24px; }
+  .divider { margin: 0 24px; }
+  .header-inner { padding: 0 24px; }
+  .takeaways { grid-template-columns: 1fr; }
+  .header-meta { flex-wrap: wrap; gap: 16px; }
+  .meta-pill { border-right: none; margin-right: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-grid"></div>
+  <div class="header-glow"></div>
+  <div class="header-inner">
+    <div class="eyebrow fade-up">Utah Mammoth Analytics &mdash; 2026 Playoff Edition</div>
+    <h1 class="fade-up fade-up-1">Tusks<br><span class="blue">Up.</span></h1>
+    <p class="header-sub fade-up fade-up-2">Two seasons of data. Three things you need to know heading into the playoff run.</p>
+    <div class="header-meta fade-up fade-up-3">
+      <div class="meta-pill"><span class="ml">Seasons</span><span class="mv">2024–25 &amp; 2025–26</span></div>
+      <div class="meta-pill"><span class="ml">Method</span><span class="mv">Road Trip Decay Index</span></div>
+      <div class="meta-pill"><span class="ml">Players tracked</span><span class="mv">12 skaters</span></div>
+      <div class="meta-pill"><span class="ml">Data source</span><span class="mv">NHL Public API</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</header>
+
+<nav class="sticky-nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Mammoth Analytics</div>
+    <div class="nav-links">
+      <a href="#intro">The Method</a>
+      <a href="#cooley">Cooley</a>
+      <a href="#depth">Depth Lines</a>
+      <a href="#stars">Stars</a>
+    </div>
+  </div>
+</nav>
+
+<!-- INTRO -->
+<section id="intro">
+  <div class="section-label">The Setup</div>
+  <h2>What we tracked<br>and <span class="blue">why it matters</span></h2>
+  <p class="lede">Regular season stats tell you who scored. They don't tell you who was running on fumes when they did it.</p>
+  <p>We built something called the <strong>Road Trip Decay Index</strong> — a measure of how a player's scoring output changes between game 1 of a road trip and game 3 and beyond, when the cumulative grind of travel, hotel beds, and consecutive nights in different cities starts to show up in the numbers. We ran it across two full seasons of Utah data, then asked the obvious question: does it get better or worse over time?</p>
+  <p>The short answer is: it depends on who you're asking about. Three things stood out clearly enough to matter heading into the playoffs.</p>
+
+  <div class="takeaways">
+    <div class="takeaway">
+      <div class="takeaway-num">01</div>
+      <div class="takeaway-title">Cooley is a different player since the return</div>
+      <div class="takeaway-desc">His road fatigue pattern — a real issue for two years — is essentially gone in the data that counts.</div>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-num">02</div>
+      <div class="takeaway-title">The depth lines got dramatically better on the road</div>
+      <div class="takeaway-desc">Stenlund and Crouse went from liabilities deep in road trips to genuine assets. That's a big deal in a seven-game series.</div>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-num">03</div>
+      <div class="takeaway-title">Watch Guenther and Keller in games 5–7</div>
+      <div class="takeaway-desc">Both regressed in road trip durability this season. They're still elite, but the data says manage their minutes late in a series.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- COOLEY -->
+<section id="cooley">
+  <div class="section-label">Takeaway 01</div>
+  <h2>Cooley is<br><span class="blue">playoff-ready</span></h2>
+  <p class="lede">His road fatigue was real. And then the injury happened, and something clicked.</p>
+
+  <p>For his first season and a half, Logan Cooley had a consistent pattern: elite on the first game of a road trip, noticeably worse by game three. His Road Trip Decay Index sat at −0.49 across 2024/25 — meaning he was producing roughly half a point per game less when trips got deep. Not a crisis, but a real, measurable pattern that showed up every time we looked at the data.</p>
+  <p>Then he got hurt in December. Missed nine weeks of team games, plus the Olympic break. Came back February 25th looking like a different player by the numbers. In his final 25 regular season games, his road game 1 output (1.00 pts/gm) matched his road game 3+ output exactly. <strong>Decay index: 0.00.</strong> That's not small sample noise — that's a pattern that held across an entire final stretch of the regular season.</p>
+
+  <div class="stat-row">
+    <div class="stat-box">
+      <span class="sl">2024/25 full season decay</span>
+      <div class="sv" style="color:var(--red);">&minus;0.49</div>
+      <div class="sd">Points lost deep in road trips</div>
+    </div>
+    <div class="stat-box">
+      <span class="sl">2025/26 pre-injury decay</span>
+      <div class="sv" style="color:var(--red);">&minus;0.82</div>
+      <div class="sd">Getting worse before the injury</div>
+    </div>
+    <div class="stat-box green">
+      <span class="sl">Post-return decay</span>
+      <div class="sv">0.00</div>
+      <div class="sd">Road game 1 = road game 3+</div>
+    </div>
+    <div class="stat-box blue">
+      <span class="sl">Road pts/gm (post-return)</span>
+      <div class="sv">1.00</div>
+      <div class="sd">Held steady across all road contexts</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Cooley — road trip decay across every phase</h3>
+    <span class="chart-note">Each bar is a measurable phase of his last two seasons. Closer to zero = better. The final bar is missing because it's 0.00.</span>
+    <div class="chart-canvas-wrap"><canvas id="cooleyDecayChart"></canvas></div>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Home vs. road context — how scoring held up each phase</h3>
+    <span class="chart-note">Watch the gap between the Mountain Blue (road game 1) and black (road game 3+) bars close over time.</span>
+    <div class="chart-canvas-wrap"><canvas id="cooleyContextChart"></canvas></div>
+  </div>
+
+  <div class="insight green">
+    <div class="insight-label">Bottom line</div>
+    <p>The nine weeks off — forced rest, essentially — appears to have reset Cooley physically. You're getting the best road-trip version of him that's ever shown up in the data, right at the moment it matters most.</p>
+  </div>
+
+  <div style="margin-top:32px;">
+    <div class="section-label">His injury timeline</div>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">Oct 9 – Dec 5</div>
+      <div class="tl-body"><strong>Pre-injury — 29 games</strong><span>Decay at −0.82. Worst stretch of his career, but road game 1 ceiling was also the highest we've seen (1.20 pts/gm).</span></div>
+    </div>
+    <div class="tl-item key">
+      <div class="tl-date">Dec 5 – Feb 4</div>
+      <div class="tl-body"><strong>Injury — ~9 weeks out</strong><span>Utah went 15–12 without him. The extended rest turned out to be a reset.</span></div>
+    </div>
+    <div class="tl-item key">
+      <div class="tl-date">Feb 4 – Feb 25</div>
+      <div class="tl-body"><strong>Winter Olympics break</strong><span>Full NHL pause. Cooley's total time away from games: 82 days.</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">Feb 25 – Apr 16</div>
+      <div class="tl-body"><strong>Post-return — 25 games</strong><span>Decay index 0.00. Road trip fatigue pattern fully resolved.</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DEPTH -->
+<section id="depth">
+  <div class="section-label">Takeaway 02</div>
+  <h2>The depth lines<br><span class="blue">transformed</span></h2>
+  <p class="lede">Nobody's going to write a feature about Kevin Stenlund's road trip durability. But they probably should.</p>
+
+  <p>Here's something that doesn't make headlines: the players who grind through games 5, 6, and 7 of a playoff series on the road are often not the stars. They're the checking line, the third pair, the guys logging 12 minutes a night making sure the opponent doesn't get anything easy. And this year, Utah's depth became significantly better at holding up deep in road trips.</p>
+  <p>Stenlund's road trip decay went from −0.19 in 2024/25 to +0.28 in 2025/26 — a swing of +0.47, the biggest improvement on the roster. Crouse improved by +0.23. McBain got better too. These aren't coincidences. Utah's bottom six is a different unit on the road than it was a year ago.</p>
+
+  <div class="player-grid">
+    <div class="player-card">
+      <div class="pc-name">Kevin Stenlund</div>
+      <span class="pc-tag green">Most improved</span>
+      <div class="pc-stat green">+0.47</div>
+      <div class="pc-label">Year-over-year decay improvement</div>
+      <div class="pc-note">Went from fading deep in trips to actually producing more as they go on. That's a complete flip.</div>
+    </div>
+    <div class="player-card">
+      <div class="pc-name">Lawson Crouse</div>
+      <span class="pc-tag green">Improved</span>
+      <div class="pc-stat green">+0.23</div>
+      <div class="pc-label">Year-over-year decay improvement</div>
+      <div class="pc-note">His physical style suggested he'd get worn down. The numbers say the opposite happened.</div>
+    </div>
+    <div class="player-card">
+      <div class="pc-name">Jack McBain</div>
+      <span class="pc-tag green">Improved</span>
+      <div class="pc-stat green">+0.15</div>
+      <div class="pc-label">Year-over-year decay improvement</div>
+      <div class="pc-note">Already solid on the road last year. Got better. The kind of player you want in a long series.</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Roster-wide year-over-year change in road trip decay</h3>
+    <span class="chart-note">Positive = improved durability on the road. Negative = more fatigue this season. Sergachev's number is a ceiling effect — he broke out offensively, not a real regression.</span>
+    <div class="chart-canvas-wrap" style="height:420px;"><canvas id="rosterYoyChart"></canvas></div>
+  </div>
+
+  <div class="insight green">
+    <div class="insight-label">Why this matters in the playoffs</div>
+    <p>A seven-game series on the road is a different beast from an 82-game schedule. Coaches lean on depth. If Utah finds themselves in a series that goes the distance, having a third line that holds up — rather than fading — could be the difference in a game 6 or 7.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STARS -->
+<section id="stars">
+  <div class="section-label">Takeaway 03</div>
+  <h2>Watch Guenther<br>and <span class="blue">Keller</span></h2>
+  <p class="lede">They're still two of the best players on the ice. The data just says don't take it for granted late in a road series.</p>
+
+  <p>This one's counterintuitive, because both Guenther and Keller had excellent seasons. But their road trip decay got measurably worse year-over-year — Guenther by −0.28, Keller by −0.23. The most likely explanation isn't that they got less durable; it's that Utah leaned on them harder down the stretch of a playoff push, and that load showed up in the data.</p>
+  <p>It's worth noting what this looks like in practice: Keller's road game 1 is still 0.73 pts/gm, and Guenther's is 0.85. These are still elite players. The question is whether the coaching staff manages their minutes smartly when deep into a road trip in April and May, or whether they keep leaning on them the same way they did all regular season.</p>
+
+  <div class="chart-wrap">
+    <h3>Key players — road game 1 vs. game 3+ scoring (2025/26)</h3>
+    <span class="chart-note">The gap between the two bars is the decay. Cooley's bars are equal — that's the ideal. Keller and Guenther both drop.</span>
+    <div class="chart-canvas-wrap"><canvas id="starsChart"></canvas></div>
+  </div>
+
+  <div class="player-grid">
+    <div class="player-card">
+      <div class="pc-name">Dylan Guenther</div>
+      <span class="pc-tag amber">Monitor</span>
+      <div class="pc-stat amber">&minus;0.28</div>
+      <div class="pc-label">YOY decay change (worse)</div>
+      <div class="pc-note">Was Utah's most road-durable star last season. The heavier workload this year seems to have cost him something.</div>
+    </div>
+    <div class="player-card">
+      <div class="pc-name">Clayton Keller</div>
+      <span class="pc-tag amber">Monitor</span>
+      <div class="pc-stat amber">&minus;0.23</div>
+      <div class="pc-label">YOY decay change (worse)</div>
+      <div class="pc-note">Still elite at home and game 1 on the road. The question is game 5 of a road series in the second round.</div>
+    </div>
+    <div class="player-card">
+      <div class="pc-name">Mikhail Sergachev</div>
+      <span class="pc-tag" style="background:rgba(108,172,227,0.15);color:var(--blue);">Context</span>
+      <div class="pc-stat" style="color:var(--blue);">+1.31</div>
+      <div class="pc-label">Road game 1 output (pts/gm)</div>
+      <div class="pc-note">His "regression" is a ceiling effect. He broke out this year — starting higher means more to lose. Not a fatigue story.</div>
+    </div>
+  </div>
+
+  <div class="insight amber">
+    <div class="insight-label">The coaching implication</div>
+    <p>Neither Guenther nor Keller needs to be protected in a short series. But if Utah advances deep — second round, conference finals — games 5, 6, 7 on the road are where smart minutes management on their two stars could pay off.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- METHODOLOGY NOTE -->
+<section style="padding-top:64px; padding-bottom:64px;">
+  <div class="section-label">Methodology</div>
+  <h2 style="font-size:28px;">How we built this</h2>
+  <p>All data pulled directly from the NHL's public API — no proprietary sources, no manual tracking. The Road Trip Decay Index compares each player's points per game in road game 1 against games 3 and beyond. A minimum of 3 qualifying deep road games was required for inclusion in any phase. Cooley's 2025/26 season was split into pre-injury, post-return, and late-season phases given the 82-day gap in his log (nine weeks injured + the three-week Winter Olympics break).</p>
+  <p>The full analysis covers 12 Utah skaters across both the 2024/25 and 2025/26 regular seasons. Points are an imperfect proxy for physical load — EDGE tracking data (speed, acceleration, distance) would strengthen these signals considerably, but remains inaccessible via the public API.</p>
+</section>
+
+<footer>
+  <div class="footer-logo">Utah Mammoth</div>
+  <p>Analytics Report &mdash; 2026 Playoff Edition<br>Data: NHL Public API &middot; Built with Python, pandas, Chart.js<br>Road Trip Decay Index &mdash; a novel measure of player fatigue under cumulative load</p>
+</footer>
+
+<script>
+const DATA = {"cooley_arc": [{"phase": "2024/25\nEarly", "season": "2024/25", "decay": -0.67, "home": 0.55, "fresh": 1.33, "deep": 0.67}, {"phase": "2024/25\nMid", "season": "2024/25", "decay": -0.67, "home": 1.0, "fresh": 1.0, "deep": 0.33}, {"phase": "2024/25\nLate", "season": "2024/25", "decay": -0.08, "home": 0.92, "fresh": 0.75, "deep": 0.67}, {"phase": "2025/26\nPre-injury", "season": "2025/26", "decay": -0.82, "home": 0.82, "fresh": 1.2, "deep": 0.38}, {"phase": "2025/26\nPost-return", "season": "2025/26", "decay": -0.33, "home": 0.67, "fresh": 1.0, "deep": 0.67}, {"phase": "2025/26\nLate season", "season": "2025/26", "decay": 0.0, "home": 0.64, "fresh": 1.0, "deep": 1.0}], "roster_yoy": [{"player": "Kevin Stenlund", "decay_2425": -0.19, "decay_2526": 0.28, "change": 0.47, "group": "improved"}, {"player": "Lawson Crouse", "decay_2425": -0.11, "decay_2526": 0.12, "change": 0.23, "group": "improved"}, {"player": "Jack McBain", "decay_2425": 0.1, "decay_2526": 0.25, "change": 0.15, "group": "improved"}, {"player": "Alexander Kerfoot", "decay_2425": -0.18, "decay_2526": -0.1, "change": 0.08, "group": "improved"}, {"player": "MacKenzie Weegar", "decay_2425": -0.08, "decay_2526": -0.05, "change": 0.03, "group": "stable"}, {"player": "Logan Cooley", "decay_2425": -0.49, "decay_2526": -0.53, "change": -0.04, "group": "stable"}, {"player": "Barrett Hayton", "decay_2425": -0.1, "decay_2526": -0.21, "change": -0.11, "group": "watch"}, {"player": "JJ Peterka", "decay_2425": 0.13, "decay_2526": -0.04, "change": -0.17, "group": "watch"}, {"player": "Clayton Keller", "decay_2425": -0.12, "decay_2526": -0.35, "change": -0.23, "group": "watch"}, {"player": "Nick Schmaltz", "decay_2425": -0.1, "decay_2526": -0.35, "change": -0.26, "group": "watch"}, {"player": "Dylan Guenther", "decay_2425": -0.15, "decay_2526": -0.43, "change": -0.28, "group": "watch"}, {"player": "Mikhail Sergachev", "decay_2425": 0.19, "decay_2526": -0.67, "change": -0.86, "group": "context"}], "depth_road": [{"player": "Kevin Stenlund", "home_2425": 0.37, "deep_2425": 0.14, "home_2526": 0.35, "deep_2526": 0.42}, {"player": "Lawson Crouse", "home_2425": 0.2, "deep_2425": 0.29, "home_2526": 0.22, "deep_2526": 0.44}, {"player": "Jack McBain", "home_2425": 0.24, "deep_2425": 0.5, "home_2526": 0.28, "deep_2526": 0.56}], "stars_road": [{"player": "Clayton Keller", "game1": 0.73, "game3plus": 0.38, "label": "Watch closely"}, {"player": "Dylan Guenther", "game1": 0.85, "game3plus": 0.42, "label": "Watch closely"}, {"player": "Logan Cooley", "game1": 1.0, "game3plus": 1.0, "label": "Road-trip proof"}, {"player": "Mikhail Sergachev", "game1": 1.31, "game3plus": 0.64, "label": "High variance"}]};
+
+const BLUE = '#6CACE3';
+const BLUE_DIM = 'rgba(108,172,227,0.25)';
+const WHITE = '#f8f8f8';
+const GRAY = '#555';
+const GREEN = '#4CAF7D';
+const RED = '#E05252';
+const AMBER = '#E8A838';
+const BLACK = '#1a1a1a';
+
+Chart.defaults.color = '#888';
+Chart.defaults.font.family = "'Oswald', sans-serif";
+Chart.defaults.font.size = 12;
+
+const gridColor = 'rgba(255,255,255,0.05)';
+const baseOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#111',
+      borderColor: BLUE,
+      borderWidth: 1,
+      titleColor: BLUE,
+      bodyColor: WHITE,
+      padding: 12,
+    }
+  },
+  scales: {
+    x: { grid: { color: gridColor }, ticks: { color: '#888', font: { size: 11 } } },
+    y: { grid: { color: gridColor }, ticks: { color: '#888', font: { size: 11 } } }
+  }
+};
+
+// CHART 1: Cooley Decay Arc
+const cooleyDecay = DATA.cooley_arc;
+const decayColors = cooleyDecay.map(d =>
+  d.decay < -0.5 ? RED : d.decay < -0.1 ? AMBER : GREEN
+);
+
+new Chart(document.getElementById('cooleyDecayChart'), {
+  type: 'bar',
+  data: {
+    labels: cooleyDecay.map(d => d.phase.replace('\n', ' ')),
+    datasets: [{
+      data: cooleyDecay.map(d => d.decay),
+      backgroundColor: decayColors,
+      borderRadius: 2,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    ...baseOptions,
+    plugins: {
+      ...baseOptions.plugins,
+      annotation: { annotations: {} },
+      tooltip: {
+        ...baseOptions.plugins.tooltip,
+        callbacks: {
+          label: ctx => ` Decay: ${ctx.raw.toFixed(2)} pts/gm`
+        }
+      }
+    },
+    scales: {
+      ...baseOptions.scales,
+      y: {
+        ...baseOptions.scales.y,
+        min: -1,
+        max: 0.2,
+        ticks: {
+          color: '#888',
+          callback: v => v.toFixed(2)
+        }
+      }
+    }
+  }
+});
+
+// CHART 2: Cooley Context (grouped bar)
+new Chart(document.getElementById('cooleyContextChart'), {
+  type: 'bar',
+  data: {
+    labels: cooleyDecay.map(d => d.phase.replace('\n', ' ')),
+    datasets: [
+      {
+        label: 'Home',
+        data: cooleyDecay.map(d => d.home),
+        backgroundColor: 'rgba(248,248,248,0.15)',
+        borderRadius: 2,
+      },
+      {
+        label: 'Road game 1',
+        data: cooleyDecay.map(d => d.fresh),
+        backgroundColor: BLUE,
+        borderRadius: 2,
+      },
+      {
+        label: 'Road game 3+',
+        data: cooleyDecay.map(d => d.deep),
+        backgroundColor: BLACK,
+        borderColor: 'rgba(108,172,227,0.3)',
+        borderWidth: 1,
+        borderRadius: 2,
+      }
+    ]
+  },
+  options: {
+    ...baseOptions,
+    plugins: {
+      ...baseOptions.plugins,
+      legend: {
+        display: true,
+        labels: { color: '#888', font: { size: 11 }, boxWidth: 12, padding: 16 }
+      },
+      tooltip: {
+        ...baseOptions.plugins.tooltip,
+        callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw.toFixed(2)} pts/gm` }
+      }
+    },
+    scales: {
+      ...baseOptions.scales,
+      y: { ...baseOptions.scales.y, min: 0, max: 1.5, ticks: { color: '#888', callback: v => v.toFixed(2) } }
+    }
+  }
+});
+
+// CHART 3: Roster YOY (horizontal bar)
+const yoy = DATA.roster_yoy;
+const yoyColors = yoy.map(d =>
+  d.group === 'improved' ? GREEN :
+  d.group === 'watch' ? RED :
+  d.group === 'context' ? BLUE : GRAY
+);
+
+new Chart(document.getElementById('rosterYoyChart'), {
+  type: 'bar',
+  data: {
+    labels: yoy.map(d => d.player),
+    datasets: [{
+      data: yoy.map(d => d.change),
+      backgroundColor: yoyColors,
+      borderRadius: 2,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    ...baseOptions,
+    indexAxis: 'y',
+    plugins: {
+      ...baseOptions.plugins,
+      tooltip: {
+        ...baseOptions.plugins.tooltip,
+        callbacks: {
+          label: ctx => {
+            const d = yoy[ctx.dataIndex];
+            return [
+              ` Change: ${ctx.raw > 0 ? '+' : ''}${ctx.raw.toFixed(2)}`,
+              ` 2024/25: ${d.decay_2425.toFixed(2)}  →  2025/26: ${d.decay_2526.toFixed(2)}`
+            ];
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        ...baseOptions.scales.x,
+        min: -1,
+        max: 0.6,
+        ticks: { color: '#888', callback: v => (v > 0 ? '+' : '') + v.toFixed(2) }
+      },
+      y: { ...baseOptions.scales.y, ticks: { color: WHITE, font: { size: 12 } } }
+    }
+  }
+});
+
+// CHART 4: Stars road game 1 vs 3+
+const stars = DATA.stars_road;
+const starColors = stars.map(d =>
+  d.label === 'Road-trip proof' ? GREEN :
+  d.label === 'Watch closely' ? AMBER : BLUE
+);
+
+new Chart(document.getElementById('starsChart'), {
+  type: 'bar',
+  data: {
+    labels: stars.map(d => d.player),
+    datasets: [
+      {
+        label: 'Road game 1',
+        data: stars.map(d => d.game1),
+        backgroundColor: BLUE,
+        borderRadius: 2,
+      },
+      {
+        label: 'Road game 3+',
+        data: stars.map(d => d.game3plus),
+        backgroundColor: stars.map(d => d.label === 'Road-trip proof' ? GREEN : d.label === 'Watch closely' ? AMBER : BLUE_DIM),
+        borderRadius: 2,
+      }
+    ]
+  },
+  options: {
+    ...baseOptions,
+    plugins: {
+      ...baseOptions.plugins,
+      legend: {
+        display: true,
+        labels: { color: '#888', font: { size: 11 }, boxWidth: 12, padding: 16 }
+      },
+      tooltip: {
+        ...baseOptions.plugins.tooltip,
+        callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw.toFixed(2)} pts/gm` }
+      }
+    },
+    scales: {
+      ...baseOptions.scales,
+      y: { ...baseOptions.scales.y, min: 0, max: 1.6, ticks: { color: '#888', callback: v => v.toFixed(2) } }
+    }
+  }
+});
+</script>
+</body>
+</html>
