@@ -1,5 +1,5 @@
 # Running on Empty
-### A two-season fatigue analysis of the Utah Mammoth — 2026 Playoff Edition
+### A two-season fatigue analysis of the Utah Mammoth - 2026 Playoff Edition
 
 ---
 
