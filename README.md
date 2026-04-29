@@ -40,7 +40,7 @@ The full analysis is an interactive HTML report covering:
 - Year-over-year comparison for 12 returning players
 - Playoff implications by player group
 
-**[View the report →](https://yourusername.github.io/mammoth-road-fatigue-analysis/)**
+**[View the report →](https://mikeharman.github.io/mammoth-road-fatigue-analysis/)**
 
 ---
 
