@@ -72,4 +72,4 @@ A decay index of 0.00 means no drop-off. Negative means fading. Positive means t
 ## Related
 
 The same Road Trip Decay Index applied across all 32 NHL teams is available here:
-**[nhl-road-fatigue](https://mikeharman89.com/yourusername/nhl-road-fatigue)** — interactive dashboard, sortable league table, and travel maps for every team.
+**[nhl-road-fatigue](https://mikeharman89.github.io/nhl-road-fatigue/)** — interactive dashboard, sortable league table, and travel maps for every team.
